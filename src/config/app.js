@@ -1,22 +1,23 @@
-const express = require('express');
-const cors = require('./cors');       // your cors config
-const morgan = require('morgan');
-const routes = require('../routes/index');
-const { errorHandler } = require('../middleware/error.middleware');
-const { notFound } = require('../middleware/notFound.middleware');
+const express = require('express')
+const cors = require('cors')
+const helmet = require('helmet')
+const morgan = require('morgan')
+const { decryptRequest, encryptResponse } = require('../middleware/encryption.middleware')
 
-const app = express();
+const createApp = () => {
+    const app = express()
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(morgan('dev'));
-app.use(cors);
+    app.use(helmet())
+    app.use(cors())
+    app.use(morgan('dev'))
+    app.use(express.json())
+    app.use(express.urlencoded({ extended: true }))
 
-// All routes
-app.use('/api/v1', routes);
+    // Encryption middleware — applies globally, controlled by ENCRYPTION_ENABLED flag
+    app.use(decryptRequest)
+    app.use(encryptResponse)
 
-// 404 + Error handlers (always last)
-app.use(notFound);
-app.use(errorHandler);
+    return app
+}
 
-module.exports = app;
+module.exports = createApp
