@@ -15,8 +15,8 @@
         }
     },
     "test": {
-        "username": "tiffin_user",
-        "password": "Tiffin@1234",
+        "username": "postgres",
+        "password": "TMS_Testing@1234",
         "database": "tiffin_db_test",
         "host": "localhost",
         "port": 5432,
